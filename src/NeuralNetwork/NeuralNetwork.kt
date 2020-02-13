@@ -1,13 +1,16 @@
-class NeuralNetwork(learningRate: Double, vararg layers: Int){
+package NeuralNetwork
+
+class NeuralNetwork(private var learningRate: Double, vararg layers: Int){
     private var nodes: Array<Int> = Array(layers.size){i->layers[i]}
-    private var weights: Array<Matrix> = Array(layers.size-1){i->Matrix(nodes[i+1],nodes[i])}
-    private var biases: Array<Matrix> = Array(layers.size-1){i->Matrix(nodes[i+1], 1)}
-    private var learningRate: Double = learningRate;
+    private var weights: Array<Matrix> = Array(layers.size-1){ i-> Matrix(nodes[i + 1], nodes[i]) }
+    private var biases: Array<Matrix> = Array(layers.size-1){ i-> Matrix(nodes[i + 1], 1) }
     fun feedForward(data: Array<Double>): Array<Double>? {
+
+
         return if(data.size != nodes[0])
             null
         else{
-            var inputs: Matrix = Matrix.matrixFromArray(data);
+            val inputs: Matrix = Matrix.matrixFromArray(data);
 
             var hidden: Matrix = weights[0].dotProduct(inputs)!!
             hidden.add(biases[0])
@@ -22,14 +25,14 @@ class NeuralNetwork(learningRate: Double, vararg layers: Int){
 
     }
     fun train(data: Array<Double>, target: Array<Double>){
-        var outputs: ArrayList<Matrix> = ArrayList()
-        var targets: Matrix = Matrix.matrixFromArray(target)
-        var inputs: Matrix = Matrix.matrixFromArray(data);
+        val outputs: ArrayList<Matrix> = ArrayList()
+        val targets: Matrix = Matrix.matrixFromArray(target)
+        val inputs: Matrix = Matrix.matrixFromArray(data);
 
         outputs.add(inputs.clone());
 
         var hidden: Matrix = weights[0].dotProduct(inputs)!!
-        for(i in 0 until weights.size){
+        for(i in weights.indices){
             if(i == 0){
                 hidden.add(biases[0])
                 hidden.sigmoid()
@@ -44,24 +47,27 @@ class NeuralNetwork(learningRate: Double, vararg layers: Int){
 
 
         var cost: Matrix = Matrix.subtract(targets, outputs.get(outputs.size-1))
-        for(i in weights.size-1..0){
+        for(i in weights.size-1 downTo 0 ){
+            //println("${cost.cols}, ${cost.rows}")
             if(i == weights.size-1){
                 var gradient: Matrix = outputs.get(i+1).derivative()
                 gradient = Matrix.multiply(cost, gradient)
+
                 gradient.applyScalar(learningRate)
-                biases[i].add(gradient)
+                biases[i].add(gradient.clone())
                 gradient = gradient.dotProduct(Matrix.transpose(outputs.get(i)))!!
 
-                weights[i].add(gradient)
+                weights[i].add(gradient.clone())
+
             }
             else {
-                cost = cost.dotProduct(Matrix.transpose(weights[i]))!!
+                cost = Matrix.transpose(weights[i+1]).dotProduct(cost)!!
                 var gradient: Matrix = outputs.get(i+1).derivative()
                 gradient = Matrix.multiply(cost, gradient)
                 gradient.applyScalar(learningRate)
-                biases[i].add(gradient)
-                gradient = Matrix.transpose(outputs.get(i)).dotProduct(gradient)!!
-                weights[i].add(gradient)
+                biases[i].add(gradient.clone())
+                gradient = outputs[i].dotProduct(Matrix.transpose(gradient))!!
+                weights[i].add(Matrix.transpose(gradient))
 
 
             }
