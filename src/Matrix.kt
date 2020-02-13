@@ -1,10 +1,8 @@
 import kotlin.random.Random
 import kotlin.math.*
-class Matrix(rows: Int, cols: Int){
+class Matrix(val rows: Int, val cols: Int){
+    private var matrix = Array(rows) { Array(cols) { 1.0 } }
 
-    private val rows: Int = rows
-    private val cols: Int = cols
-    private var matrix = Array(rows) { Array(cols) { Random.nextDouble(-1.0,1.0) } }
     companion object{
         fun subtract(m: Matrix, m1: Matrix): Matrix{
             if(m.rows != m1.rows)
@@ -56,7 +54,7 @@ class Matrix(rows: Int, cols: Int){
         fun multiply(m1: Matrix, m2: Matrix): Matrix{
             var m: Matrix = Matrix(m1.rows, m2.cols)
             if(m1.rows!=m2.rows||m1.cols!=m2.cols)
-                throw IllegalArgumentException("Matrices do not match in size")
+                throw IllegalArgumentException("Matrices do not match in size: m1, ${m1.rows}, ${m1.cols}, m2, ${m2.rows}, ${m2.cols}")
             else{
                 for(i in 0 until m1.rows){
                     for (j in 0 until m1.cols){
@@ -70,7 +68,7 @@ class Matrix(rows: Int, cols: Int){
     }
     fun dotProduct(m: Matrix): Matrix? {
         if(this.cols != m.rows)
-            return null;
+            return null
         var result: Matrix = Matrix(rows, m.cols)
         for(i in 0 until rows){
             for(j in 0 until m.cols){
@@ -86,14 +84,14 @@ class Matrix(rows: Int, cols: Int){
     fun applyScalar(num: Double){
         for(i in 0 until this.rows){
             for(j in 0 until this.cols){
-                matrix[i][j]+=num
+                matrix[i][j]*=num
             }
         }
     }
 
     fun add(m: Matrix){
         if(this.rows != m.rows && this.cols != m.cols)
-            println("Matrices do not match in size");
+            println("Matrices do not match in size: m1, ${this.rows}, ${this.cols}, m2, ${m.rows}, ${m.cols}");
         else{
             for(i in 0 until this.rows){
                 for(j in 0 until this.cols){
@@ -144,15 +142,8 @@ class Matrix(rows: Int, cols: Int){
         }
         return m;
     }
-    fun sumUp(): Double{
-        var sum: Double = 0.0
-        for(i in 0 until this.rows){
-            for(j in 0 until this.cols){
-                sum+= matrix[i][j]
-            }
-        }
-        return sum
-    }
+
+
 
 
 }
