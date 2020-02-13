@@ -1,11 +1,11 @@
+package NeuralNetwork
+
 class NeuralNetwork(private var learningRate: Double, vararg layers: Int){
     private var nodes: Array<Int> = Array(layers.size){i->layers[i]}
-    private var weights: Array<Matrix> = Array(layers.size-1){i->Matrix(nodes[i+1],nodes[i])}
-    private var biases: Array<Matrix> = Array(layers.size-1){i->Matrix(nodes[i+1], 1)}
+    private var weights: Array<Matrix> = Array(layers.size-1){ i-> Matrix(nodes[i + 1], nodes[i]) }
+    private var biases: Array<Matrix> = Array(layers.size-1){ i-> Matrix(nodes[i + 1], 1) }
     fun feedForward(data: Array<Double>): Array<Double>? {
-        weights[0].print()
-        println()
-        println()
+
 
         return if(data.size != nodes[0])
             null
@@ -67,7 +67,7 @@ class NeuralNetwork(private var learningRate: Double, vararg layers: Int){
                 gradient.applyScalar(learningRate)
                 biases[i].add(gradient.clone())
                 gradient = outputs[i].dotProduct(Matrix.transpose(gradient))!!
-                weights[i].add(gradient.clone())
+                weights[i].add(Matrix.transpose(gradient))
 
 
             }
