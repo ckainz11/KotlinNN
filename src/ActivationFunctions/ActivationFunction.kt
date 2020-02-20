@@ -1,6 +1,6 @@
 package ActivationFunctions
 
 interface ActivationFunction {
-    fun apply(x: Double)
-    fun derivative(x: Double)
+    fun applyActivation(x: Double): Double
+    fun derivative(x: Double): Double
 }

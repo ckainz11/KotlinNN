@@ -1,5 +1,6 @@
 package NeuralNetwork
 
+import ActivationFunctions.ActivationFunction
 import kotlin.random.Random
 import kotlin.math.*
 class Matrix(val rows: Int, val cols: Int){
@@ -102,6 +103,13 @@ class Matrix(val rows: Int, val cols: Int){
             }
         }
     }
+    fun divideBy(divisor: Double){
+        for(i in 0 until this.rows){
+            for(j in 0 until this.cols){
+                matrix[i][j] /= divisor;
+            }
+        }
+    }
     fun subtract(m: Matrix){
         if(this.rows != m.rows)
             println("Matrices do not match in size");
@@ -113,12 +121,21 @@ class Matrix(val rows: Int, val cols: Int){
             }
         }
     }
-    fun sigmoid(){
+    fun applyActivation(af: ActivationFunction){
         for(i in 0 until this.rows){
             for(j in 0 until this.cols){
-                matrix[i][j] = 1.0 / (1.0+exp(-matrix[i][j]))
+                matrix[i][j] = af.applyActivation(matrix[i][j])
             }
         }
+    }
+
+    fun derivative(af: ActivationFunction): Matrix {
+        for(i in 0 until this.rows){
+            for(j in 0 until this.cols){
+                matrix[i][j] = af.derivative(matrix[i][j])
+            }
+        }
+        return this.clone()
     }
     fun print(){
         for(i in 0 until this.rows){
@@ -126,14 +143,6 @@ class Matrix(val rows: Int, val cols: Int){
                 println(matrix[i][j]);
             }
         }
-    }
-    fun derivative(): Matrix {
-        for(i in 0 until this.rows){
-            for(j in 0 until this.cols){
-                matrix[i][j] = matrix[i][j]*(1-matrix[i][j])
-            }
-        }
-        return this.clone()
     }
     fun clone(): Matrix {
         var m: Matrix = Matrix(this.rows, this.cols)
