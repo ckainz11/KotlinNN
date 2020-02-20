@@ -1,20 +1,26 @@
 package NeuralNetwork
 
-fun main(){
+import ActivationFunctions.*
+import Dataset.Dataset
+import DatasetGenerator.XOR
 
-  var nn: NeuralNetwork = NeuralNetwork(1.0, 2, 3, 1)
-  println(nn.feedForward(arrayOf(1.0,1.0))!![0])
-  println(nn.feedForward(arrayOf(0.0,0.0))!![0])
+
+fun main(){
+  var af: ActivationFunction = TanH()
+  var nn = NeuralNetwork(0.03,af,2,4,2,1)
+
   println()
-  for(i in 0 until 10000){
-    nn.train(arrayOf(0.0,0.0), arrayOf(0.0))
-    nn.train(arrayOf(1.0,1.0), arrayOf(0.0))
-    nn.train(arrayOf(1.0,0.0), arrayOf(1.0))
-    nn.train(arrayOf(0.0,1.0), arrayOf(1.0))
+  var dataset = Dataset()
+  for(i in 0 until 1000){
+      var data: Array<Array<Double>> = XOR.generateXOR()
+      dataset.addLabel(data[0],data[1])
 
   }
-  println(nn.feedForward(arrayOf(0.0,1.0))!![0])
-  println(nn.feedForward(arrayOf(0.0,0.0))!![0])
-
-
+  for(i in 0 until 10000){
+    nn.trainBatch(100, dataset)
+  }
+  println(nn.feedForward(arrayOf(-1.0,-1.0))[0])
+  println(nn.feedForward(arrayOf(-1.0,1.0))[0])
+  println(nn.feedForward(arrayOf(1.0,-1.0))[0])
+  println(nn.feedForward(arrayOf(1.0,1.0))[0])
 }
