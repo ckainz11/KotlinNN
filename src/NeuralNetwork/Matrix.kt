@@ -9,7 +9,7 @@ class Matrix(val rows: Int, val cols: Int){
     companion object{
         fun subtract(m: Matrix, m1: Matrix): Matrix {
             if(m.rows != m1.rows)
-                println("Matrices do not match in size")
+                throw IllegalArgumentException("Matrices do not match in size")
             else{
                 for(i in 0 until m.rows){
                     m.matrix[i][0] -=m1.matrix[i][0]
@@ -20,7 +20,7 @@ class Matrix(val rows: Int, val cols: Int){
         fun squareSub(m1: Matrix, m2: Matrix): Matrix?{
 
             if(m1.rows != m2.rows || m1.cols != m2.cols)
-                println("Matrices do not match in size")
+                throw java.lang.IllegalArgumentException("Matrices do not match in size")
             else{
                 var m: Matrix = Matrix(m1.rows, m1.cols)
                 for(i in 0 until m1.rows){
@@ -69,9 +69,9 @@ class Matrix(val rows: Int, val cols: Int){
         }
 
     }
-    fun dotProduct(m: Matrix): Matrix? {
+    fun dotProduct(m: Matrix): Matrix {
         if(this.cols != m.rows)
-            return null
+            throw IllegalArgumentException("Matrices do not match in size")
         var result: Matrix = Matrix(rows, m.cols)
         for(i in 0 until rows){
             for(j in 0 until m.cols){
@@ -94,7 +94,7 @@ class Matrix(val rows: Int, val cols: Int){
 
     fun add(m: Matrix){
         if(this.rows != m.rows && this.cols != m.cols)
-            throw java.lang.IllegalArgumentException("Matrices do not match in size: m1, ${this.rows}, ${this.cols}, m2, ${m.rows}, ${m.cols}");
+            throw IllegalArgumentException("Matrices do not match in size: m1, ${this.rows}, ${this.cols}, m2, ${m.rows}, ${m.cols}");
         else{
             for(i in 0 until this.rows){
                 for(j in 0 until this.cols){
@@ -112,7 +112,7 @@ class Matrix(val rows: Int, val cols: Int){
     }
     fun subtract(m: Matrix){
         if(this.rows != m.rows)
-            println("Matrices do not match in size");
+            throw IllegalArgumentException("Matrices do not match in size");
         else{
             for(i in 0 until this.rows){
                 for(j in 0 until this.cols){
