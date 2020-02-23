@@ -2,7 +2,9 @@ package NeuralNetwork
 
 import ActivationFunctions.ActivationFunction
 import Dataset.Dataset
+
 import kotlin.IllegalArgumentException
+import kotlin.concurrent.thread
 
 class NeuralNetwork(private val learningRate: Double, private val activationFunction: ActivationFunction, vararg layers: Int){
     private var nodes: Array<Int> = Array(layers.size){i->layers[i]}
@@ -24,15 +26,20 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
             }
             return Matrix.arrayFromMatrix(hidden)
         }
-
     }
-    fun trainBatch(batchSize: Int, dataset: Dataset){
+    fun trainBatch(batchSize: Int, dataset: Dataset) {
         var adjustments: ArrayList<Adjustments> = ArrayList()
-        for(i in 0 until batchSize){
-            var label: Array<Array<Double>> = dataset.getRandomLabel()
-            adjustments.add(train(label[0], label[1]))
+        for (i in 0 until batchSize) {
+
+                var label: Array<Array<Double>> = dataset.getRandomLabel()
+                adjustments.add(train(label[0], label[1]))
+
+
         }
-        applyAdjustments(average(adjustments))
+
+            applyAdjustments(average(adjustments))
+
+
     }
     fun trainSingle(dataset: Dataset){
         var label: Array<Array<Double>> = dataset.getRandomLabel()
@@ -44,6 +51,7 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
             biases[i].add(adj.getBiasAdjustment(i))
             weights[i].add(adj.getWeightAdjustment(i))
         }
+
     }
     private fun train(data: Array<Double>, target: Array<Double>): Adjustments{
         if(data.size != nodes[0] || target.size != nodes.last())
@@ -95,8 +103,6 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
                 gradient = outputs[i].dotProduct(Matrix.transpose(gradient))
                 gradient = Matrix.transpose(gradient)
                 weightAdjustments.add(gradient.clone())
-
-
             }
         }
         biasAdjustments.reverse()
