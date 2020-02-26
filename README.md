@@ -12,5 +12,5 @@ ActivationFunctions supported: TanH, Sigmoid, Relu, Linear
 All inputs and outputs are Double Arrays
 
 For training use:
-nn.trainSingle(input, output) or
-nn.trainBatch(batchSize, input, output)
+nn.trainSingle(dataset) or
+nn.trainBatch(batchSize, datasesst)

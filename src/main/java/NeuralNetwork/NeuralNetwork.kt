@@ -29,14 +29,10 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
     }
     fun trainBatch(batchSize: Int, dataset: Dataset) {
         var adjustments: ArrayList<Adjustments> = ArrayList()
-        for (i in 0 until batchSize) {
-
+        repeat(batchSize) {
                 var label: Array<Array<Double>> = dataset.getRandomLabel()
                 adjustments.add(train(label[0], label[1]))
-
-
         }
-
             applyAdjustments(average(adjustments))
 
 
@@ -44,10 +40,9 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
     fun trainSingle(dataset: Dataset){
         var label: Array<Array<Double>> = dataset.getRandomLabel()
         applyAdjustments(train(label[0], label[1]))
-
     }
     private fun applyAdjustments(adj: Adjustments){
-        for(i in 0 until weights.size){
+        for(i in weights.indices){
             biases[i].add(adj.getBiasAdjustment(i))
             weights[i].add(adj.getWeightAdjustment(i))
         }
@@ -107,7 +102,7 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
         }
         biasAdjustments.reverse()
         weightAdjustments.reverse()
-        for(i in 0 until weights.size){
+        for(i in weights.indices){
             adj.addBiasAdjustment(biasAdjustments[i])
             adj.addWeightAdjustment(weightAdjustments[i])
         }
@@ -115,7 +110,7 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
     }
     private fun average(batchAdjustments: ArrayList<Adjustments>): Adjustments {
         var final = Adjustments()
-        for(i in 0 until weights.size){
+        for(i in weights.indices){
             var weightSum: Matrix = batchAdjustments[0].getWeightAdjustment(i)
             var biasSum: Matrix = batchAdjustments[0].getBiasAdjustment(i)
             for(j in 1 until batchAdjustments.size){

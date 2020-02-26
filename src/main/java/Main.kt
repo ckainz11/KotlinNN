@@ -14,8 +14,8 @@ fun main(){
   val dataset = Dataset()
   val xor = XOR()
   val timeNeeded = measureTimeMillis {
-  dataset.generate(xor, 1_000)
-  repeat(20_000) {
+  dataset.generate(xor, 500)
+  repeat(10_000) {
     nn.trainBatch(128, dataset)
   }
   }
@@ -23,7 +23,7 @@ fun main(){
   println(nn.feedForward(arrayOf(-1.0,1.0))[0])
   println(nn.feedForward(arrayOf(1.0,-1.0))[0])
   println(nn.feedForward(arrayOf(1.0,1.0))[0])
-    println(timeNeeded)
+  println("${timeNeeded/1000.0} seconds needed")
 
 }
 
