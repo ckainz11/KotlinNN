@@ -2,9 +2,11 @@ package NeuralNetwork
 
 import ActivationFunctions.ActivationFunction
 import Dataset.Dataset
+import kotlinx.coroutines.*
 
 import kotlin.IllegalArgumentException
-import kotlin.concurrent.thread
+import kotlin.system.measureNanoTime
+import kotlin.system.measureTimeMillis
 
 class NeuralNetwork(private val learningRate: Double, private val activationFunction: ActivationFunction, vararg layers: Int){
     private var nodes: Array<Int> = Array(layers.size){i->layers[i]}
@@ -28,11 +30,24 @@ class NeuralNetwork(private val learningRate: Double, private val activationFunc
         }
     }
     fun trainBatch(batchSize: Int, dataset: Dataset) {
+        var promisedAdjustments: ArrayList<Deferred<Adjustments>> = ArrayList()
         var adjustments: ArrayList<Adjustments> = ArrayList()
-        repeat(batchSize) {
-                var label: Array<Array<Double>> = dataset.getRandomLabel()
-                adjustments.add(train(label[0], label[1]))
+
+        repeat(batchSize){
+
+        var label = dataset.getRandomLabel()
+        promisedAdjustments.add(GlobalScope.async {
+
+            train(label[0], label[1])
+        })}
+
+
+        runBlocking {
+            for(i in 0 until promisedAdjustments.size){
+                adjustments.add(promisedAdjustments[i].await())
+            }
         }
+
             applyAdjustments(average(adjustments))
 
 
